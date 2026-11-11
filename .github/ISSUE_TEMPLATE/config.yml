@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Install and set up ppdo-cli
+    url: https://github.com/PPDOStudio/ppdo-cli-release#install
+    about: Install steps, setting up identities, groups and environments, and every command.
+  - name: Report a security problem
+    url: https://github.com/PPDOStudio/ppdo-cli-release/blob/main/SECURITY.md
+    about: Please don't open a public issue for a vulnerability. Follow the security policy instead.

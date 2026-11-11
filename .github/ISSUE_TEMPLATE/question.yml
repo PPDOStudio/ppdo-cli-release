@@ -1,0 +1,29 @@
+name: Question
+description: Ask how to do something with ppdo-cli.
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Many answers are in the [README](https://github.com/PPDOStudio/ppdo-cli-release#readme) and in `ppdo-cli <command> --help`. Remove tenant ids, environment names, URLs, tokens and secrets from anything you paste.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you want to do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      render: shell
+
+  - type: input
+    id: version
+    attributes:
+      label: ppdo-cli version
+      description: The output of `ppdo-cli --version`.
+      placeholder: ppdo-cli 1.0.0-alpha.0

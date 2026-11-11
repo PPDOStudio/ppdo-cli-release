@@ -1,0 +1,114 @@
+ppdo-cli Free Use Licence, version 1.0
+
+Copyright (c) 2026 Dylan Haskins and Ryan James. All rights reserved.
+
+ppdo-cli is free to use. This licence lets you install and use it for any
+purpose, including at work and for your clients. It does not let you change
+it, redistribute it, sell it or offer it to others as your own. Dylan Haskins
+and Ryan James (together "we" or "the Licensors") keep all rights not granted
+below.
+
+1. Definitions
+
+   "Software" means ppdo-cli as published by the Licensors, in any form:
+   the package and its release files, its documentation, the agent skills
+   that ship with it, and any updates the Licensors publish.
+
+   "You" means the person or organization that installs or uses the
+   Software. If you use it on behalf of an organization, "You" includes
+   that organization, and you confirm that you may accept this licence for
+   it.
+
+2. What you may do
+
+   Subject to this licence, the Licensors grant You a free, worldwide,
+   non-exclusive, non-transferable licence to:
+
+   a. install and run the Software on any number of computers, servers,
+      build agents, pipelines and containers that You use, for any purpose,
+      including commercial work for You and for your clients;
+   b. make the copies needed for that, including installing the Software
+      from the Licensors' published sources in scripts, pipelines and
+      container images that You use;
+   c. let your employees and contractors use it for You under this licence;
+   d. use, copy and adapt the agent skills and documentation that ship with
+      the Software, for use with your own agents and tools;
+   e. use everything the Software produces for You (exported solutions,
+      reports, files and other output) as You choose. The Licensors claim
+      no rights in it.
+
+3. What you may not do
+
+   Unless the Licensors agree in writing, You may not:
+
+   a. modify, translate or adapt the Software, or make works based on it,
+      except the agent skills and documentation as section 2.d allows;
+   b. distribute, publish, sell, rent, lend, sublicense or otherwise give
+      the Software to anyone except as section 2 allows, including in a
+      package registry, mirror or download site, or in a product or image
+      that You offer to others;
+   c. offer the Software, or a service whose main value is the Software, to
+      others as a hosted or managed service;
+   d. use the Software, or what You learn from its code, to build a
+      product that competes with it;
+   e. remove or change any copyright, licence or trademark notice in it;
+   f. get around any technical limit in it, or help anyone else do any of
+      the above.
+
+   You may read the Software's code to understand how it works, to fix a
+   problem in your own use of it, and as the law allows.
+
+4. Names and trademarks
+
+   This licence grants no right to use the names "ppdo-cli", "PPDO",
+   "PPDO Studio" or "Power Platform DevOps Studio", or the Licensors'
+   logos, except to say truthfully that You use the Software.
+
+5. Other software
+
+   The Software includes open source components that are licensed under
+   their own terms, listed in the notices that ship with it. Those terms
+   apply to those components; this licence does not limit them.
+
+6. Feedback
+
+   If You send suggestions or feedback, the Licensors may use them freely,
+   with no obligation to You.
+
+7. Ending this licence
+
+   This licence ends automatically if You break it. When it ends, You must
+   stop using the Software and delete your copies. Sections 4 and 8 to 10
+   continue after it ends.
+
+8. No warranty
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+   The Software can read and change data and configuration in the services
+   You connect it to. You are responsible for the accounts, permissions and
+   safety modes You give it, and for checking what it changes.
+
+9. Limitation of liability
+
+   TO THE EXTENT THE LAW ALLOWS, IN NO EVENT SHALL THE LICENSORS BE LIABLE
+   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING LOSS OF DATA,
+   PROFITS OR BUSINESS, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+   THE USE OF OR OTHER DEALINGS IN THE SOFTWARE.
+
+10. General
+
+   a. The Licensors may publish new versions of this licence. Each version
+      of the Software stays available under the licence it was released
+      with.
+   b. If any part of this licence cannot be enforced, the rest still
+      applies.
+   c. This licence is governed by the laws of New Zealand, and the
+      courts of New Zealand have jurisdiction over any dispute about it.
+
+To ask for other terms, contact Dylan Haskins through
+https://github.com/dylanhaskins or Ryan James through
+https://github.com/ryanmichaeljames.

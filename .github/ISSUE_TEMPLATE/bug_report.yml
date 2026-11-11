@@ -1,0 +1,88 @@
+name: Bug report
+description: A ppdo-cli command did something wrong or failed unexpectedly.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Before you paste anything, remove tenant ids, environment and organization names, URLs, user names, tokens and secrets. Never paste the output of `ppdo-cli auth token`.
+
+  - type: input
+    id: version
+    attributes:
+      label: ppdo-cli version
+      description: The output of `ppdo-cli --version`.
+      placeholder: ppdo-cli 1.0.0-alpha.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: The output of `node --version`.
+      placeholder: v24.11.0
+
+  - type: dropdown
+    id: shell
+    attributes:
+      label: Shell
+      options:
+        - PowerShell 7
+        - Windows PowerShell 5.1
+        - Command Prompt
+        - bash or zsh
+        - Run by an agent (Claude Code, GitHub Copilot, ...)
+        - Other
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: The command you ran, with placeholders for anything private.
+      render: shell
+      placeholder: ppdo-cli dv query accounts --select 'name,accountnumber' --env <env>
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output
+      description: The JSON error from stderr. Add `-v` to the command for the requests it made (secrets are redacted, but check anyway).
+      render: json
+      placeholder: '{"error": "...", "hint": "..."}'
+
+  - type: input
+    id: exit-code
+    attributes:
+      label: Exit code
+      description: "PowerShell: `$LASTEXITCODE`. bash: `echo $?`."
+      placeholder: "2"
+
+  - type: checkboxes
+    id: redacted
+    attributes:
+      label: Private details
+      options:
+        - label: I removed tenant ids, environment and organization names, URLs, user names, tokens and secrets.
+          required: true
