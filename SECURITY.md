@@ -17,6 +17,7 @@ We'll reply to say we have your report, keep you told how the fix is going, and 
 For example:
 
 - a token, secret or certificate written somewhere it shouldn't be, or sent to a host other than the environment's own;
+- an Azure DevOps PAT shown in any output, stored unencrypted on Windows, sent outside its one organization, or stored or changed without a person at a terminal;
 - a way to get around a group's mode (`read-only`, `read-write`, `full`) or to widen it without a person at a terminal;
 - a way for a repo's `.ppdo-cli.json`, a response from a service, or any other input to make ppdo-cli run something or write outside the folder it was given.
 

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.1] - 2026-11-12
+
+### Added
+
+- The `pat` sign-in method signs in to one Azure DevOps organization with a personal access token.
+
+### Security
+
+- Child processes no longer get the environment variables that hold a client secret or a PAT.
+- Azure DevOps tokens are no longer sent to a URL whose path uses `..` or `%2e%2e` segments to reach another organization.
+
 ## [1.0.0-beta.0] - 2026-11-12
 
 First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the ppdo-cli Free Use Licence.
@@ -50,5 +61,6 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.0...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.1...HEAD
+[1.0.0-beta.1]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.1
 [1.0.0-beta.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.0

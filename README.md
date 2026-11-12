@@ -1,7 +1,7 @@
 ![ppdo-cli: one CLI for Dataverse and Azure DevOps, for agents and people](https://raw.githubusercontent.com/PPDOStudio/ppdo-cli-release/main/docs/assets/banner.svg)
 
 [![npm version](https://badgen.net/npm/v/@ppdostudio/ppdo-cli/beta)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
-[![npm downloads](https://badgen.net/npm/dm/@ppdostudio/ppdo-cli)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
+[![npm downloads](https://img.shields.io/npm/dm/@ppdostudio/ppdo-cli)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
 [![node](https://badgen.net/npm/node/@ppdostudio/ppdo-cli)](https://nodejs.org/)
 [![install size](https://badgen.net/packagephobia/install/@ppdostudio/ppdo-cli)](https://packagephobia.com/result?p=%40ppdostudio%2Fppdo-cli)
 [![license](https://badgen.net/badge/license/free%20use/blue)](https://github.com/PPDOStudio/ppdo-cli-release/blob/main/LICENSE)
@@ -68,9 +68,37 @@ Commands use each service's default environment (`ppdo-cli env use <name>`), or 
 
 Different accounts for different services work too: put each in its own group. `ppdo-cli env pin dev platform` writes a `.ppdo-cli.json` at the root of a git repo, so every agent working there uses those environments.
 
-Sign-in methods: `browser`, `broker` (Windows single sign-on), `device_code`, `az_cli` and `spn` (a service principal: `--client-id` with `--secret-env <VAR>` or `--certificate <pem|pfx>`). Tokens are cached per identity, encrypted with DPAPI on Windows. Commands never prompt for a sign-in: they exit with code 3 and print the `ppdo-cli auth login` command to run.
+Sign-in methods: `browser`, `broker` (Windows single sign-on), `device_code`, `az_cli`, `spn` (a service principal: `--client-id` with `--secret-env <VAR>` or `--certificate <pem|pfx>`) and `pat` (an Azure DevOps personal access token, see [below](#azure-devops-with-a-pat)). Tokens are cached per identity, encrypted with DPAPI on Windows. Commands never prompt for a sign-in: they exit with code 3 and print the `ppdo-cli auth login` command to run.
 
 A `browser` sign-in opens a ppdo-cli page with a sign-in ID, such as `K7Q4-MD2X`, in its address, tab title and colour. The terminal prints the same ID, so with several sign-ins open at once you can tell which tab belongs to which.
+
+### Azure DevOps with a PAT
+
+Use a personal access token (PAT) only when an Entra sign-in to Azure DevOps isn't possible, for example on a device that Conditional Access blocks. A PAT lives for months, carries its own access, and skips the device checks that a sign-in gets. So ppdo-cli keeps it on a short leash:
+
+- A `pat` identity is for **one** Azure DevOps organization. ppdo-cli sends the PAT to `https://dev.azure.com/<organization>/` only, and checks this on every request. A group that uses the identity can hold only DevOps environments of that organization. The PAT never reaches Dataverse or Graph.
+- Only a person at a terminal can store a PAT, through hidden input. Agents can't sign in, store, change or re-point it, and changing a writable group's PAT identity needs a person too.
+- Before ppdo-cli keeps a PAT, Azure DevOps must confirm it belongs to the identity's `--username`.
+- No command shows it: not `auth token`, `auth status`, `whoami`, `--dry-run` or `-v`. Child processes (az, dotnet, the browser) don't get the variable that holds it.
+
+```
+ppdo-cli identity add ado --method pat --organization contoso --username you@contoso.com
+ppdo-cli group add contoso-ado --identity ado --mode read-write
+ppdo-cli env add platform --in contoso-ado --devops-org contoso --devops-project platform
+ppdo-cli auth login ado --expires 2026-12-31     # paste the PAT; the input is hidden
+ppdo-cli whoami --check
+```
+
+Create the PAT in Azure DevOps (User settings → Personal access tokens) with:
+- **Organization:** this one organization, not "All accessible organizations". ppdo-cli refuses a PAT that is already stored for an identity of another organization.
+- **Scopes:** the fewest that your commands need, for example Code (Read) for repos and pull requests, Work Items (Read), Build (Read). Add the write scopes only for a writable group.
+- **Expiration:** short. Pass the same date to `--expires`, and ppdo-cli warns a week before and stops when it expires.
+
+**Where it is kept.** On Windows the PAT is encrypted with DPAPI in `pat.<identity>.bin`, and ppdo-cli refuses to store or read it without DPAPI. On macOS and Linux it is protected by file permissions only, so `auth login` asks you to type `yes` first. DPAPI and file permissions both keep it from other users, not from other code running as you.
+
+**In a pipeline**, set `--pat-env <VAR>` on the identity instead, and map the PAT into that variable. ppdo-cli reads that variable only (never `AZURE_DEVOPS_EXT_PAT` or other ambient ones) and confirms each new value with Azure DevOps on its first use.
+
+`ppdo-cli auth logout <identity>` deletes the stored PAT. Revoke it in Azure DevOps too: the command prints the link.
 
 ### Configuration files
 
@@ -179,13 +207,15 @@ A JSON schema for the file ships with the package as `schema/ppdo-cli.schema.jso
 
 | Key | Meaning |
 |---|---|
-| `tenant` | Entra tenant id or domain. Required. |
-| `method` | `browser` (default), `broker` (Windows single sign-on), `device_code`, `az_cli` or `spn`. |
-| `username` | The account to sign in as (UPN). Required for `browser`, `broker` and `device_code`; a sign-in as anyone else is refused. |
+| `tenant` | Entra tenant id or domain. Required, except for `pat`. |
+| `method` | `browser` (default), `broker` (Windows single sign-on), `device_code`, `az_cli`, `spn` or `pat`. |
+| `username` | The account to sign in as (UPN). Required for `browser`, `broker`, `device_code` and `pat`; a sign-in (or a PAT) for anyone else is refused. |
 | `client_id` | The app (client) id. For `spn`, the service principal's id. For the other methods it defaults to the Azure CLI's public client; set it only to sign in through your own app registration. |
 | `config_dir` | `az_cli` only: the `AZURE_CONFIG_DIR` to use, so one identity can have its own `az login`. `~` is expanded when the command writes it. |
 | `secret_env` | `spn` only: the name of the environment variable that holds the client secret. The secret itself is never stored. |
 | `certificate` | `spn` only, instead of `secret_env`: a PEM file with the private key and the certificate, or a PFX/P12 file without a password. |
+| `organization` | `pat` only, and required: the one Azure DevOps organization the PAT is for. |
+| `pat_env` | `pat` only: the name of the environment variable that holds the PAT, for pipelines. Without it, `ppdo-cli auth login` stores the PAT. |
 
 **`groups.<name>`**: an account and how much agents may change.
 
@@ -207,6 +237,7 @@ A JSON schema for the file ships with the package as `schema/ppdo-cli.schema.jso
 - A Dataverse URL or DevOps project belongs to one environment only (URLs compare without case), so it always has one account and one mode. To change its group, use `ppdo-cli env move`.
 - Every environment has `dataverse` or `devops`.
 - `mode` and `method` are one of the values above. A typo such as `Full` is refused, not read as `read-only`.
+- A group whose identity uses `pat` holds only DevOps environments of that identity's `organization`.
 
 A group whose `identity` names an identity that isn't in the file is still read: commands that use it stop with "no identity named …". Add the identity again with `ppdo-cli identity add` (for a writable group, that needs a person at a terminal).
 
@@ -248,7 +279,7 @@ Each group has a mode (a command run as an app takes its mode from `--mode` inst
 
 A blocked request exits with code 7. `--dry-run` shows the request without sending it. Tokens are only ever sent to the environment's own host or organization, and are dropped on a redirect to anywhere else.
 
-Widening what agents may change needs a person at a terminal. That means raising a group's mode, adding or moving an environment into a writable group, or pointing a writable environment or its group's identity somewhere new. Without a terminal, the command exits 7. An environment can't be in two groups, so a read-only production environment can't also be reached through a writable group.
+Widening what agents may change needs a person at a terminal. That means raising a group's mode, adding or moving an environment into a writable group, or pointing a writable environment or its group's identity somewhere new (including a PAT identity's `organization` or `pat_env`). Without a terminal, the command exits 7. An environment can't be in two groups, so a read-only production environment can't also be reached through a writable group.
 
 ## Output and errors
 
