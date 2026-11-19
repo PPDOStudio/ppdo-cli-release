@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.3] - 2026-11-19
+
+### Changed
+
+- A `dv data` overlay name can have upper case letters and `_`, so it can be the name of a pipeline environment, for example `Contoso_Test`.
+
 ## [1.0.0-beta.2] - 2026-11-19
 
 ### Added
@@ -90,7 +96,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.2...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.3...HEAD
+[1.0.0-beta.3]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.1
 [1.0.0-beta.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.0
