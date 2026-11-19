@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.4] - 2026-11-20
+
+### Fixed
+
+- `dv data` writes a date-only column with the behavior UserLocal as a date and time in UTC, so its date is no longer one day early in a time zone ahead of UTC; export such tables again.
+
 ## [1.0.0-beta.3] - 2026-11-19
 
 ### Changed
@@ -96,7 +102,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.3...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.4...HEAD
+[1.0.0-beta.4]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.1
