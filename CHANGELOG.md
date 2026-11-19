@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.2] - 2026-11-19
+
+### Added
+
+- `dv plugin register` registers a plugin DLL from attributes on its classes in a development environment: assembly, plugin types, steps, images, Custom APIs with their parameters and properties, and workflow activities, with `--dry-run`, `--solution` and the part options `--assembly`, `--steps` and `--apis`.
+- `dv plugin inspect` reads and checks the registration attributes of a plugin DLL, without .NET.
+- `dv plugin migrate` prints registration attributes for classes that use spkl attributes, with the step ids of the environment.
+- `dv plugin register` also reads spkl `CrmPluginRegistration` attributes, so a spkl project registers without code changes.
+- The `ppdo-cli-plugins` skill gives agents the attribute class file (`PluginRegistration.cs`) and the procedures to set up, change and deploy plugin registrations.
+- `dv data export` writes the configuration data of a solution as YAML files in a `reference-data` folder (one file for each table or for each record, many-to-many links, and the files of file and image columns), with `--check` to find out-of-date files. A record is identified by its GUID, and a lookup is the GUID of its target.
+- `dv data import` makes an environment equal to a `reference-data` folder and writes only the differences, with a plan (`--check`) and `--overlay` for the values of one environment (also a GUID that is different in that environment). It creates each record with the GUID of the file, and it never deletes.
+- `dv data delete` deletes the records and removes the links that the delete modes of the schema give, after a person types `delete` at the terminal, or with `--yes` in a pipeline; `--check` lists each delete.
+- `dv data convert` converts a Configuration Migration Tool `data.xml` and its schema to a `reference-data` folder; it reads the metadata of the environment (reads only) for the schema names and order of many-to-many relationships, and leaves out, with a warning, columns that cannot be written and relationships to tables outside the CMT schema, so the first export needs no hand edits.
+- A `dv data` schema file accepts a full CMT `<fetch>` document in `fetchXmlFilter` and uses the `<filter>` elements of its `<entity>`.
+- `dv data export` keeps the records and links deleted in the source environment in a deletion log, `data/.deleted`, by GUID, for tables and relationships with the delete mode `manifest` or `mirror`; the log only grows, and `dv data delete` deletes the logged records and removes the logged links in the target.
+- `dv data delete` continues after a delete or link removal that Dataverse refuses, and reports it in `failures`; `--delete-log-file <file>` writes each record and link that it deleted to a JSON file.
+- `dv data init` adds a schema file for each table from the metadata of the environment.
+- `dv data export`, `import` and `convert` keep the attachments of notes and email attachments (`annotation.documentbody`, `activitymimeattachment.body`) as files in `data/files`, not as base64 text in the YAML.
+- A `dv data` schema file can set the path of each file in `data/files` with a file name pattern (`files.name` for the table, `file` for one column), for example `"{objectid.name}/{$filename}"`.
+- `dv data export`, `dv data import` and `dv data delete` show their progress on stderr with `--verbose`, and `--log-file <file>` keeps the progress, the retries, the result and the error in a file.
+- The `ppdo-cli-data` skill gives agents the `dv data` commands, the `reference-data` folder and file formats, overlays, deletes, errors and pipeline steps.
+- `schema/reference-data.schema.json` describes the format of a `dv data` schema file, so an editor can check it and complete its properties.
+
+### Fixed
+
+- A `.ppdo-cli.json` that pins no environment (for example one with only a `plugins` section) no longer stops commands with "names no environment"; the search goes on up to the git root, then to the default.
+- `env pin` keeps the other keys of `.ppdo-cli.json`, such as `plugins`, instead of writing only the pins.
+- `env unpin` removes only the pins, and deletes `.ppdo-cli.json` only when nothing else is in it.
+
 ## [1.0.0-beta.1] - 2026-11-12
 
 ### Added
@@ -61,6 +90,7 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.1...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.2...HEAD
+[1.0.0-beta.2]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.1
 [1.0.0-beta.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.0

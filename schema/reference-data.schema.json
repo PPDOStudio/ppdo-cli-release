@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/PPDOStudio/ppdo-cli-release/main/schema/reference-data.schema.json",
+  "title": "ppdo-cli reference data: the schema file of one table",
+  "description": "schema/<table>.yaml in the folder reference-data: the columns, the filter and the options that 'ppdo-cli dv data export', 'ppdo-cli dv data import' and 'ppdo-cli dv data delete' use for one table.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "table", "columns"],
+  "properties": {
+    "version": {
+      "const": 1,
+      "description": "The version of this format."
+    },
+    "table": {
+      "$ref": "#/$defs/logicalName",
+      "description": "The logical name of the table. It must be the same as the name of the file."
+    },
+    "match": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": { "$ref": "#/$defs/logicalName" },
+      "description": "The match key. Only the primary key column is supported in this version: a record is identified by its GUID, in each environment. Leave it out, or write the primary key column."
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The columns to export and import, in the order of the data file. Do not write the primary key: each record has it. A lookup is the GUID of its target; give a GUID that is different in one environment in an overlay. The bytes of a file column or an image column are saved as a file in data/files/<table>.",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/logicalName" },
+          { "$ref": "#/$defs/column" }
+        ]
+      }
+    },
+    "layout": {
+      "enum": ["table", "record"],
+      "default": "table",
+      "description": "table: one data file for the table, data/tables/<table>.yaml. record: one data file for each record, data/tables/<table>/<identifier>.yaml."
+    },
+    "filter": {
+      "type": "string",
+      "minLength": 1,
+      "description": "An OData $filter expression. The records that it selects are the scope of the table."
+    },
+    "fetchXmlFilter": {
+      "type": "string",
+      "minLength": 1,
+      "description": "FetchXML <filter> and <link-entity> elements, or a full <fetch> document as in a Configuration Migration Tool schema (its <entity> gives the elements). Use it only when $filter cannot give the same result."
+    },
+    "write": {
+      "enum": ["upsert", "create"],
+      "default": "upsert",
+      "description": "upsert: create and update. create: create a record that is missing, and never change a record that exists."
+    },
+    "nullValues": { "$ref": "#/$defs/nullValues" },
+    "delete": { "$ref": "#/$defs/delete" },
+    "missingLookup": { "$ref": "#/$defs/missingLookup" },
+    "bypass": { "$ref": "#/$defs/bypass" },
+    "batchSize": { "$ref": "#/$defs/batchSize" },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The files of the file, image and base64 columns of this table in data/files/<table>.",
+      "properties": {
+        "name": { "$ref": "#/$defs/filePattern" }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "The many-to-many relationships of this table to export and import. Write a relationship in the schema file of one of its two tables only. The other table must also have a schema file.",
+      "items": { "$ref": "#/$defs/relationship" }
+    }
+  },
+  "not": { "required": ["filter", "fetchXmlFilter"] },
+  "$defs": {
+    "logicalName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "The logical name of a table or a column (lower case)."
+    },
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "#/$defs/logicalName" },
+        "write": {
+          "enum": ["upsert", "create"],
+          "default": "upsert",
+          "description": "create: write this column only when the import creates the record."
+        },
+        "missingLookup": { "$ref": "#/$defs/missingLookup" },
+        "nullValues": {
+          "$ref": "#/$defs/nullValues",
+          "description": "For this column, in place of nullValues of the table."
+        },
+        "file": {
+          "$ref": "#/$defs/filePattern",
+          "description": "For a file, image or base64 column: the file name pattern of this column, in place of files.name of the table."
+        }
+      }
+    },
+    "filePattern": {
+      "type": "string",
+      "minLength": 1,
+      "default": "{$id}.{$column}.{$ext}",
+      "description": "The path of a file in data/files/<table>, made by the export. Tokens: {$id} (the GUID of the record), {$column}, {$filename} (the file name in Dataverse), {$stem} and {$ext} (that name without its extension, and the extension), {<column>} (a column of the schema) and {<lookup column>.name} (the name of the target). A / makes a folder. The paths must be unique in the table; {$id} makes them unique. The import reads the path in the data file, not the pattern."
+    },
+    "nullValues": {
+      "enum": ["clear", "ignore"],
+      "default": "clear",
+      "description": "What a null in the data file does in the import. clear: remove the value in the target environment. ignore: do nothing, so a record that exists keeps its value and a new record gets the default value of Dataverse."
+    },
+    "delete": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The delete options of this table. If a table has no delete options, dv data delete deletes nothing in that table, and the import never deletes.",
+      "properties": {
+        "mode": {
+          "enum": ["off", "manifest", "mirror"],
+          "default": "off",
+          "description": "off: delete nothing. manifest: delete the records of the deletion log (data/.deleted), which the export writes when a record is deleted in the source environment. mirror: also delete each record that is in the scope in the target environment and is not in the data file."
+        },
+        "action": {
+          "enum": ["delete", "deactivate"],
+          "default": "delete",
+          "description": "delete: delete the record. deactivate: set statecode to inactive."
+        }
+      }
+    },
+    "missingLookup": {
+      "enum": ["error", "skip"],
+      "default": "error",
+      "description": "What the import does when it cannot find the target of a lookup. error: stop before the first write. skip: write the record without the column, and report it. A new record has no value in the column, and a record that exists keeps its value."
+    },
+    "bypass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "plugins": {
+          "enum": ["none", "sync", "async", "all"],
+          "default": "none",
+          "description": "Skip custom synchronous logic, custom asynchronous logic, or the two, for the writes of this table. Needs a group in the mode full."
+        },
+        "steps": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "description": "Skip only these plug-in steps."
+        },
+        "flows": {
+          "type": "boolean",
+          "default": false,
+          "description": "true: do not start cloud flows for the writes of this table."
+        }
+      }
+    },
+    "batchSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000,
+      "description": "The number of records in one bulk request."
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "description": "The schema name of a many-to-many relationship."
+        },
+        "delete": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "enum": ["off", "manifest", "mirror"],
+              "default": "off",
+              "description": "off: only add links. manifest: also remove the links of the deletion log (data/.deleted), which the export writes when a link is removed in the source environment. mirror: also remove a link of a listed record when the link is not in the data file."
+            }
+          }
+        }
+      }
+    }
+  }
+}

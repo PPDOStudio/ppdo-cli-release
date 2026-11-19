@@ -241,7 +241,7 @@ A JSON schema for the file ships with the package as `schema/ppdo-cli.schema.jso
 
 A group whose `identity` names an identity that isn't in the file is still read: commands that use it stop with "no identity named …". Add the identity again with `ppdo-cli identity add` (for a writable group, that needs a person at a terminal).
 
-**`.ppdo-cli.json`** pins environments for one repo, by name. ppdo-cli looks for it from the current folder up to the git root (outside a git repo, only in the current folder). It can also hold a `$schema`, which `env pin` keeps:
+**`.ppdo-cli.json`** pins environments for one repo, by name. ppdo-cli uses the nearest one that pins an environment, from the current folder up to the git root (outside a git repo, only in the current folder); a file that pins none, for example one that holds only a `plugins` section, is skipped. `env pin` changes only the pins and keeps the other keys (`$schema`, `plugins`); `env unpin` removes the pins and deletes the file only when nothing else is in it:
 
 ```json
 {
@@ -325,13 +325,18 @@ In PowerShell, quote values that contain commas, such as `--env 'dev,uat'` or `-
 | `dv solution create \| update \| patch \| add-component \| remove-component \| promote` | The solution lifecycle without pac; `dv publisher list \| create` for publishers. |
 | `dv component ... \| dependency list` | A component's layers, dependencies, unpublished changes and names; dependency rows for solutions or one component. |
 | `dv envvar \| connref \| connection` | Environment variables and connection references (with typed `set`), and the connections available. |
-| `dv workflow \| plugin \| job` | Flows and processes (on/off, runs, swap-connref), plugin registrations, traces and stats, and system jobs. |
+| `dv workflow \| plugin \| job` | Flows and processes (on/off, runs, swap-connref), plugin registrations, traces and stats, and system jobs. `dv plugin register` registers a plugin DLL from attributes on its classes (or spkl attributes) in a development environment. |
 | `dv org \| setting \| team \| role \| user \| access` | Environment details and settings, security roles and privileges, and why someone can see a record. |
 | `dv view \| form \| webresource` | Edit views and forms as XML files and push web resources from files. |
 | `dv solution unpack <file.zip>` | Unpack a solution into a source folder without pac. The layout and bytes match `pac solution unpack`, only changed files are written, and `--check` exits 6 when the folder differs. |
 | `dv solution pack <folder> --save <file.zip>` | Pack a source folder into a solution zip without pac, with the same bytes every time. A `.cdsproj` folder builds its PCF and plug-in references first; `--map` reads files from a mapping file. |
 | `dv solution clone <uniquename>` | Export a solution (unmanaged and managed together) into a new `.cdsproj` project with the source in `src/`. |
 | `dv solution sync [folder]` | Re-export the folder's solution and write only what changed, deleting files of removed components; `--check` exits 6 when the folder is out of date. |
+| `dv data export <folder>` | Write the configuration data of a solution as YAML files: one file for each table (or for each record), many-to-many links, and the files of file and image columns; `--check` exits 6 when the folder is out of date. |
+| `dv data import <folder>` | Make an environment equal to the files and write only the differences (CreateMultiple, UpdateMultiple); `--check` shows the plan; `--overlay` for values of one environment. It never deletes. |
+| `dv data delete <folder>` | Delete the records and remove the links that the delete modes of the schema give, after a person types `delete` (or `--yes` in a pipeline); `--check` lists each delete; `--delete-log-file` keeps what was deleted. |
+| `dv data convert <source> <folder>` | Convert a Configuration Migration Tool `data.xml` (a file, a folder or a `.zip`) and its schema to the new format, with the relationship names and the columns from the metadata of the environment (reads only), so the first export needs no hand edits. |
+| `dv data init <folder> --table <name>` | Add a schema file for each table, from the metadata of the environment. |
 | `ado api <method> <path>` | Any Azure DevOps REST request; `{project}` is replaced with the environment's project, and `--host` reaches the other DevOps hosts. |
 | `ado project list`, `ado repo list \| get \| file \| tree \| branches \| commits \| diff \| policies` | Projects and Git repositories: a file at a branch, tag or commit, commit history, a unified diff between two refs (`--stat` for the file list), and branch policies. |
 | `ado pipeline list \| get \| run \| stages`, `ado run list \| get \| logs \| retry \| cancel` | Pipelines and runs: queue a run (`--wait`, `--skip-stage`, `--only-stage`), its stages and errors, step logs (`--failed-only`, `--save`), and re-running failed stages. |
@@ -343,6 +348,20 @@ In PowerShell, quote values that contain commas, such as `--env 'dev,uat'` or `-
 
 Deployment commands, which replace the Studio runners, are coming next.
 
+## Configuration data
+
+`dv data` keeps the configuration data (reference data) of a solution in source control as YAML files, as an alternative to `pac data export`, `pac data import` and the Configuration Migration Tool. A folder such as `MySolution/reference-data` has `schema/<table>.yaml`, one file for each table that you write (`dv data init` makes the first version), and `data/`, which the export writes. One changed value is one changed line in a pull request.
+
+```
+ppdo-cli dv data init MySolution/reference-data --table contoso_category,contoso_item --env dev
+ppdo-cli dv data export MySolution/reference-data --env dev
+ppdo-cli dv data import MySolution/reference-data --env test --check
+ppdo-cli dv data import MySolution/reference-data --env test
+ppdo-cli dv data delete MySolution/reference-data --env test --check
+```
+
+A record is identified by its GUID, which is the same in each environment (the import creates a record with the GUID of the file), and a lookup is the GUID of its target; an overlay gives a GUID that is different in one environment, such as a currency or a team. The import reads the target, compares each record, and sends only the differences: an import with nothing different sends no write, and an import that stops can run again. It stops before the first write if a lookup has no target, and it never deletes. Deletes are a separate command, `dv data delete`, which asks a person to confirm (or takes `--yes` in a pipeline) and deletes only in a table or relationship whose schema file has a delete mode (`manifest` or `mirror`). In such a table, the export moves each record deleted in the development environment out of the data file and into a deletion log, `data/.deleted`, which only grows: `dv data delete` deletes the logged records (by GUID) in each target, a delete that Dataverse refuses does not stop the other deletes, and the log keeps the history in source control. `--verbose` shows the progress on stderr (each table, wave, request, failure and retry), and `--log-file <file>` keeps it in a file with the result, for example as a pipeline artifact. `dv data convert` makes the new files from a `ReferenceData` folder and the metadata of the source environment. The format of a schema file is a [JSON Schema](https://raw.githubusercontent.com/PPDOStudio/ppdo-cli-release/main/schema/reference-data.schema.json) that an editor can use; the `ppdo-cli-data` skill has the full rules.
+
 ## Agent skills
 
 ```
@@ -353,7 +372,7 @@ ppdo-cli skills install --target claude --link # link instead of copy
 
 `--link` (a junction on Windows, a symlink elsewhere) suits a local build: the agents always see the skills in your clone. `ppdo-cli skills uninstall` removes only the copies or links ppdo-cli made.
 
-The bundled skills are `ppdo-cli` (load first: accounts, modes, exit codes, output), `ppdo-cli-dataverse` (data, metadata, solutions and source folders, diagnosis) and `ppdo-cli-devops` (repos, pull requests, work items, pipelines, failed runs). Together they list every `dv`, `ado` and `graph` command with all of its options.
+The bundled skills are `ppdo-cli` (load first: accounts, modes, exit codes, output), `ppdo-cli-data` (configuration data with `dv data`: the folder, the file formats, overlays, deletes, pipelines), `ppdo-cli-dataverse` (data, metadata, solutions and source folders, diagnosis), `ppdo-cli-devops` (repos, pull requests, work items, pipelines, failed runs) and `ppdo-cli-plugins` (plugin registration attributes and `dv plugin register`). Together they list every `dv`, `ado` and `graph` command with all of its options.
 
 ## License
 
