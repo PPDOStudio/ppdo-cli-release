@@ -51,7 +51,7 @@
     "write": {
       "enum": ["upsert", "create"],
       "default": "upsert",
-      "description": "upsert: create and update. create: create a record that is missing, and never change a record that exists."
+      "description": "upsert: create and update. create: a seed table: create the records that are missing, and never update a record that exists (the import lists it as kept); --write-upsert updates it in one run."
     },
     "nullValues": { "$ref": "#/$defs/nullValues" },
     "delete": { "$ref": "#/$defs/delete" },

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.5] - 2026-11-20
+
+### Added
+
+- `dv data import --write-upsert` updates the existing records of seed tables (`write: create`) for one run; with `--only`, only the tables of the list.
+
+### Changed
+
+- `dv data import` lists each existing record of a seed table (`write: create`) that is different from the file as `kept`, with its differences, and counts it in `kept`; it still does not write it, and `--check` does not give exit 6 for it.
+- The import warns when a seed table has the delete mode `mirror`.
+
 ## [1.0.0-beta.4] - 2026-11-20
 
 ### Fixed
@@ -102,7 +113,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.4...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.5...HEAD
+[1.0.0-beta.5]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.2
