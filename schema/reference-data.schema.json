@@ -58,6 +58,11 @@
     "missingLookup": { "$ref": "#/$defs/missingLookup" },
     "bypass": { "$ref": "#/$defs/bypass" },
     "batchSize": { "$ref": "#/$defs/batchSize" },
+    "perEnvironment": {
+      "type": "boolean",
+      "default": false,
+      "description": "The data is split by environment: data/tables/<table>.<environment>.yaml holds all the records of one environment, and data/tables/<table>.yaml is the default. dv data import --environment-name <environment> uses the file of that environment when it exists, else the default file. Not with layout: record."
+    },
     "files": {
       "type": "object",
       "additionalProperties": false,
@@ -68,7 +73,7 @@
     },
     "relationships": {
       "type": "array",
-      "description": "The many-to-many relationships of this table to export and import. Write a relationship in the schema file of one of its two tables only. The other table must also have a schema file.",
+      "description": "The many-to-many relationships of this table to export and import. Write a relationship in the schema file of one of its two tables only. The other table must also have a schema file, except role for a role link (teamroles_association, systemuserroles_association).",
       "items": { "$ref": "#/$defs/relationship" }
     }
   },

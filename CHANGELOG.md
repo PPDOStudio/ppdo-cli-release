@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.6] - 2026-11-23
+
+### Added
+
+- A `dv data` lookup value can be the expression `{ $expr: businessunit.root }`, which the import resolves to the root business unit of the target environment, in a data file or an overlay.
+- `dv data` role links (`teamroles_association`, `systemuserroles_association`) keep the root role, which has the same GUID in each environment; the import links the copy of the role in the business unit of the team or user, and the schema needs no file for `role`.
+- A `dv data` table with `perEnvironment: true` can have a data file for each environment (`data/tables/<table>.<environment>.yaml`) beside the default file, for records that are different in an environment.
+- `dv data import --environment-name <name>` and `dv data delete --environment-name <name>` use the data of one environment: its overlay, if any, and its file of each table with `perEnvironment`.
+
+### Changed
+
+- `dv data export` writes the root role of each role link in place of the copy of the business unit; export such relationships again.
+
 ## [1.0.0-beta.5] - 2026-11-20
 
 ### Added
@@ -113,7 +126,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.6...HEAD
+[1.0.0-beta.6]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.3
