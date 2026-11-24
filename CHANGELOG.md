@@ -7,6 +7,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.7] - 2026-11-24
+
+### Added
+
+- `ppdo-cli spec preview <file>` shows the app an app spec describes in your browser, in the look of Power Apps and without an environment: its site map, views over the spec's sample data, and main forms, reloaded when you save the spec.
+- Errors that need a sign-in or a person now have a `next` object that says what to run and whether an agent or only the person may run it.
+- Without a terminal, a change that lets agents write somewhere new now creates an approval request: you grant it with `ppdo-cli approval grant <id>` at a terminal, and the agent waits with `approval wait <id>` and runs its command again.
+- Without a terminal, `auth login` for a PAT identity opens a browser page where you paste the PAT, so an agent can start the sign-in without seeing the PAT.
+- `ppdo-cli project init` adds the lean project scaffold and Studio's config files (`<Name>.json`, `<Name>.studio.json`, `Environments.json`, `deployPackages.json`) to a repository, never overwriting a file.
+- `ppdo-cli project add-solution` adds a Dataverse solution to a project: it finds or creates the publisher and unmanaged solution, clones the source, and writes the solution's entries in `<Name>.json` and `deployPackages.json` and its `.version` file.
+- `ppdo-cli spec validate`, `plan` and `apply` build an app spec (a JSON file of choices, tables, columns, lookups, many-to-many relationships and alternate keys) into a Dataverse environment and its solution, creating only what is missing.
+- `spec build` builds source-backed web resources and writes verified artifacts for `spec plan` and `spec apply`.
+- `spec build` runs each `npm` or `command` build into an empty output folder, so a webpack build that skips unchanged bundles still gives every web resource, and then puts back the old files it did not replace.
+- `spec apply` can create multi-select choices, email, URL and phone columns, polymorphic lookups, lookups that cascade deletes, and custom activity tables.
+- An app spec can have `views`: `spec apply` creates them, or replaces their query and columns when they differ, with filters that use option labels and many-to-many links.
+- An app spec can have main `forms` with a header (whose columns take the form's labels or their own), tabs, sections, sub-grids and the timeline; on out-of-the-box tables such as account and contact, `spec apply` makes a new copy of the main form and changes the copy, never the system form.
+- An app spec can have system `charts` and `dashboards` of charts and lists: `spec apply` creates them, or replaces them when they differ.
+- An app spec can give each new table, and each app navigation item, an SVG icon: `spec apply` uploads the icons as web resources and sets them.
+- `spec apply` creates the app spec's publisher and unmanaged solution when the environment does not have them, and `spec plan` shows them as its first steps.
+- `spec plan` and `spec apply` read the environment several requests at a time and read each thing once, and `spec apply` creates a new table's columns (all but lookups) in the request that creates the table; both report how many seconds each part took.
+- An app spec can give column settings (required or recommended, auditing, Advanced find, column security, autonumber, choice and Yes/No defaults, Yes/No labels, decimal ranges), `bigint`, `image`, `file` and `customer` columns, lookup relationship names and every cascade, many-to-many intersect names, and table settings such as auditing and change tracking.
+- An app spec can give a date column's behaviour, a text column's format, and a lookup's cascade per target, and names an icon's web resource after its path next to the spec (`icons/x.svg` stays `<prefix>_/icons/x.svg`).
+- `spec apply` updates the labels and settings of the tables and columns a spec creates when they differ from the spec, and never changes a column's type.
+- An app spec can hold a table's own quick find, lookup, associated, advanced find, offline and Copilot views, view ids, joins, OR groups, quick find columns, hidden and unsortable cells, cell icons and grid settings, and raw FetchXML and layout XML for a view the structured fields cannot hold; `spec from-solution` writes each view in the structured form when it gives the same view, and as raw XML otherwise.
+- An app spec can hold quick create, quick view and card forms, form ids, form libraries and event handlers, the form order, tabs with columns, sections of up to four columns, hidden and unlabelled tabs, sections and fields, and raw form XML that names the spec's views, forms and charts; `spec from-solution` writes each form in the structured form when it gives the same form, and as raw XML otherwise.
+- An app spec can hold web resources as static files or source-build outputs (`webResources`): `spec apply` creates or updates and publishes them before the forms.
+- An app spec can hold environment variables (text, number, yes/no and JSON) with their default and current value: `spec apply` creates or updates them, and `spec from-solution` writes the publisher's variables.
+- An app spec can hold security roles with a privilege depth per table and other privileges by name: `spec apply` creates each role and gives it exactly those privileges, and `spec from-solution` writes the roles in the source.
+- An app spec can hold plugin assemblies built from source: `spec apply` registers the types, steps, images and Custom APIs that their registration attributes declare, and `spec from-solution` names the C# project of each exported assembly it can find.
+- An app spec can register plugin packages (`.nupkg`) that a `dotnet` build packs: `spec apply` uploads the package when its assemblies differ, then registers the steps and Custom APIs of those assemblies, and `spec from-solution` names the project of each exported package.
+- `spec build` builds .NET projects without the Git commit in the informational version, so a commit that leaves a plugin's source as it is does not change its assembly, and packs a plugin package again on each build.
+- An app spec can hold cloud flows from their definition JSON and the connection references they use: `spec apply` creates or updates each flow and turns it on or off, `spec plan` compares the definition by content and stops a flow that should be on while a reference it uses has no connection, and `spec from-solution` points each cloud flow at its exported definition.
+- An app spec can hold classic workflows, business rules and actions from their exported XAML and settings: `spec apply` creates or updates each one (an active one is turned off for the update and on again), and `spec from-solution` points each one at its exported files.
+- An app spec can hold organization settings (`settings`): columns of the organization row, such as auditing and session timeouts, and the environment values of setting definitions; `spec apply` sets them through the Web API, and `spec from-solution` writes the setting values the solutions carry.
+- An app spec can pass through folders of an unpacked solution that it does not model (`passthrough`), such as canvas apps, Dataverse search, AI skills and duplicate rules: `spec apply` imports them into the spec's solution, `spec plan` compares them with an export of that solution, and `spec from-solution` writes one entry per solution for those folders.
+- An app spec can hold PCF controls built from source: `spec apply` imports a new or changed control into the spec's solution and publishes it, `spec plan` asks for a higher version when the bundle changed but the version did not, and `spec from-solution` names the `.pcfproj` of each exported control it finds.
+- An app spec can define Custom APIs with their request parameters and response properties, each implemented by a plugin type of a spec plugin: `spec apply` registers them with that assembly, and `spec from-solution` writes the APIs that only the solution defines.
+- An app spec can name `dv data` folders in `referenceData`: `spec plan` shows each one's plan as a `data` step and `spec apply` imports it after everything else, with `--overlay` and `--no-overlay`; `spec from-solution` lists each solution's `reference-data` folder and gives the `dv data convert` command for CMT data.
+- `project init` writes `.gitattributes` lines that keep `dv data` YAML files LF and the files of file and image columns binary.
+- An app spec chart can keep its own look (`presentationXml`); a dashboard can give its components' widths, heights, search, letter bar, view picker and header colour, or be raw XML; an app can give its security roles by name, its settings and exact lists of views, forms and charts. `spec from-solution` writes all of these.
+- An app spec can build into several solutions: `solutions` lists the others, and each element can name its `solution`; `spec apply` creates missing solutions with their version and description, and `spec from-solution` puts each element in the solution that first defined it.
+- An app spec can have formula (Power Fx), calculated and rollup columns: `spec apply` creates them after the columns they read and updates a definition that differs, and `spec from-solution` writes them, with the XAML of calculated and rollup columns in `formulas/` next to the spec.
+- `spec apply` saves a table's quick find view through an import of the spec's solution, because Dataverse refuses a Web API update of a quick find view with its search columns.
+- `dv view` checks a quick find view's query without its search placeholders, so a quick find on a number column no longer fails the check.
+- `ppdo-cli spec from-solution` writes an app spec from unpacked solution source, reading a project's solutions in deployment order, with a gaps file for each part the spec cannot hold yet.
+- `ppdo-cli spec seed` upserts an app spec's `data` rows by their key columns, with choice labels, lookups by name and many-to-many links, and changes nothing on a rerun.
+- An app spec can have model-driven `apps`: `spec apply` creates each app and its site map, puts the spec's tables, forms and views in it, and reports the app checker's warnings.
+- A new agent skill, `ppdo-cli-build`, tells agents how to turn a Figma mockup, Azure DevOps stories or a brief into an app spec and apply it.
+- PAT identities can share a Windows Credential Manager target with a PAT Manager canvas.
+- `ppdo-cli repo create` creates a repository on GitHub or in an Azure DevOps project and pushes its first commit, with `--preview` and resume after a failed step.
+- GitHub environments (`env add --github <owner>`) and the `gh_cli` sign-in method, which uses the GitHub CLI's sign-in for github.com only.
+
+### Changed
+
+- ppdo-cli now reads the optional PAT Manager organization configuration from `%LOCALAPPDATA%\PatManager\config\organisations.json`.
+- The `ppdo-cli-build` skill now lists the known limits of app specs and what to do for each, and the README says that `spec plan` runs build commands when the cached outputs are stale.
+- The agent skill now has agents set up identities, read-only groups and environments, and start `auth login` themselves, while you finish each sign-in in the browser and raise each mode at a terminal.
+
+### Fixed
+
+- `spec validate` accepts Custom API parameter names with hyphens, as Dataverse does.
+- `spec from-solution` and `spec plan` find a plugin package that Dataverse named `<prefix>_<PackageId>` from the project's `PackageId` without the prefix.
+- `spec from-solution` keeps an environment variable's definition when a later solution only names the variable.
+- `spec from-solution` writes the Custom APIs of a plugin package whose class binds them with `[CrmPluginRegistration("<name>")]`, also when the name is a constant, and leaves out those that `[CustomApi]` defines.
+- `dv plugin register` no longer fails when a step names a table that does not exist yet; the plan says the table has no filter for the message.
+- `skills list` marks a linked skill whose target is gone as `broken`, and a deleted copy as `missing`, instead of showing it as installed.
+- `repo create` refuses Windows drive-relative paths such as `C:dir`.
+
 ## [1.0.0-beta.6] - 2026-11-23
 
 ### Added
@@ -126,7 +194,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.6...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.7...HEAD
+[1.0.0-beta.7]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.4
