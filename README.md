@@ -65,6 +65,8 @@ ppdo-cli whoami --check
 
 `ppdo-cli group discover <group>` lists every Dataverse environment the group's account can reach, and `--add <name>` adds them.
 
+To do the same in a browser, run `ppdo-cli config edit --open`. The local page shows each identity with its sign-in state, each group with its mode and what that mode permits, each environment, and the effect of a `.ppdo-cli.json` pin. Before you save, you see the diff of `config.json` and the same changes as commands. A change that lets agents do more waits until you run `ppdo-cli approval grant <id>` in a terminal. The page never asks for a secret: its Sign in button opens the same sign-in as `auth login`.
+
 Commands use each service's default environment (`ppdo-cli env use <name>`), or `--env <name>`. To read from several at once, pass `--env dev,uat` or `--group contoso-test` to any read command. You get one labelled result per environment.
 
 Different accounts for different services work too: put each in its own group. `ppdo-cli env pin dev platform` writes a `.ppdo-cli.json` at the root of a git repo, so every agent working there uses those environments.
@@ -265,7 +267,7 @@ Use a development environment. The `ppdo-cli-build` agent skill has the full spe
 
 ### Configuration files
 
-The `identity`, `group` and `env` commands write these files for you. Use the commands where you can: they check the rules below, and they ask a person at a terminal before anything gains a wider mode. The files are plain JSON, so you can also read or edit them by hand. Agents are told never to edit them.
+The `identity`, `group` and `env` commands (and the `config edit` page) write these files for you. Use the commands where you can: they check the rules below, and they ask a person at a terminal before anything gains a wider mode. The files are plain JSON, so you can also read or edit them by hand. Agents are told never to edit them.
 
 | File | Where | What it holds |
 |---|---|---|
@@ -478,6 +480,7 @@ In PowerShell, quote values that contain commas, such as `--env 'dev,uat'` or `-
 | Command | What it does |
 |---|---|
 | `identity`, `group`, `env` | Set up accounts, groups and environments (see [Set up](#set-up)). |
+| `config edit [--port <n>] [--open]` | Manage identities, groups, environments and modes in a local web page, with the diff of `config.json` before each save. |
 | `approval list \| show \| grant \| deny \| wait` | Approval requests for changes that let agents write somewhere new: a person grants them at a terminal, and the agent waits, then runs its command again. |
 | `auth login \| logout \| status \| token` | Sign in, sign out, see cached tokens, or print a token for scripts (`--show` to print to a terminal). |
 | `whoami [--check]` | Which environment, mode and account each service resolves to; `--check` calls each service to confirm. |

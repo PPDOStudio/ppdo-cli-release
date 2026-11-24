@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.8] - 2026-11-25
+
+### Added
+
+- `ppdo-cli config edit` serves a local page where you manage identities, groups, environments and the mode of each group: see what each mode permits, review the diff of `config.json` and the same changes as commands, and save; a save that lets agents do more waits for `ppdo-cli approval grant <id>` in a terminal, and a Sign in button confirms that a browser, Windows broker or PAT identity works.
+
+### Changed
+
+- The sign-in pages of `auth login` and the PAT page have the look of the other ppdo-cli pages, in light and dark.
+
 ## [1.0.0-beta.7] - 2026-11-24
 
 ### Added
@@ -194,7 +204,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.7...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.8...HEAD
+[1.0.0-beta.8]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.5
