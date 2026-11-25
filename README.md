@@ -1,6 +1,6 @@
 ![ppdo-cli: one CLI for Dataverse and Azure DevOps, for agents and people](https://raw.githubusercontent.com/PPDOStudio/ppdo-cli-release/main/docs/assets/banner.svg)
 
-[![npm version](https://badgen.net/npm/v/@ppdostudio/ppdo-cli/beta)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
+[![npm version](https://badgen.net/npm/v/@ppdostudio/ppdo-cli)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
 [![npm downloads](https://img.shields.io/npm/dm/@ppdostudio/ppdo-cli)](https://www.npmjs.com/package/@ppdostudio/ppdo-cli)
 [![node](https://badgen.net/npm/node/@ppdostudio/ppdo-cli)](https://nodejs.org/)
 [![install size](https://badgen.net/packagephobia/install/@ppdostudio/ppdo-cli)](https://packagephobia.com/result?p=%40ppdostudio%2Fppdo-cli)
@@ -18,24 +18,24 @@ ppdo-cli repo create ContosoPlatform --provider github --preview
 ppdo-cli whoami --check
 ```
 
-> **Beta.** Commands, options and output may change between beta releases. The command is `ppdo-cli` for now, so that it doesn't clash with the `ppdo` PowerShell module.
+> Versions follow [Semantic Versioning](https://semver.org/): a new major version for a change that breaks a command, an option or the output. The command is `ppdo-cli`, so that it doesn't clash with the `ppdo` PowerShell module.
 
 ## Install
 
 You need Node.js 22.12 or later (Node 24 LTS recommended).
 
-Install it globally from npm, where it is `@ppdostudio/ppdo-cli`. While ppdo-cli is in beta, name the `beta` tag:
+Install it globally from npm, where it is `@ppdostudio/ppdo-cli`:
 
 ```
-npm install -g @ppdostudio/ppdo-cli@beta
+npm install -g @ppdostudio/ppdo-cli
 ppdo-cli --version
 ```
 
-Or run it without installing: `npx @ppdostudio/ppdo-cli@beta --help`.
+Or run it without installing: `npx @ppdostudio/ppdo-cli --help`.
 
 Then install the agent skills (see [Agent skills](#agent-skills)), for example `ppdo-cli skills install --target claude`.
 
-- **Update:** `npm install -g @ppdostudio/ppdo-cli@beta` again replaces the installed version.
+- **Update:** `npm install -g @ppdostudio/ppdo-cli@latest` replaces the installed version.
 - **Uninstall:** `npm uninstall -g @ppdostudio/ppdo-cli`. The config and token caches stay in their folders (see [Configuration files](#configuration-files)).
 
 Each release is also on [GitHub](https://github.com/PPDOStudio/ppdo-cli-release/releases), as `ppdostudio-ppdo-cli-<version>.tgz` with its checksum in `SHA256SUMS`. Install a downloaded file with `npm install -g ./ppdostudio-ppdo-cli-<version>.tgz`.

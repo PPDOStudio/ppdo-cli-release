@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
+The first version after the beta: ppdo-cli now follows Semantic Versioning and is published under the `latest` tag.
+
+### Added
+
+- `ppdo-cli dv data configure <folder>` serves a local page to edit a reference-data folder: schema files, records, overlays, environment files and links.
+- The page checks each save with `dv data import` and runs `dv data export` after a preview.
+- A Links view shows the many-to-many links of a table, where you can add and remove links.
+- A schema with `columns: []` is a reference table: it has no data file, and the import skips, with a warning, a link to a record the target does not have.
+- Served pages can collapse the navigation and the side panel.
+
+### Changed
+
+- `dv data convert` writes records as `dv data export` does, so the first export of a converted folder shows only real changes.
+
 ## [1.0.0-beta.8] - 2026-11-25
 
 ### Added
@@ -204,7 +220,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0-beta.8...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0
 [1.0.0-beta.8]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.6
