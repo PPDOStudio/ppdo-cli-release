@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-27
+
+### Added
+
+- A role link file can name a role, `{ $role: <name> }`, for a role whose GUID is different in each environment, such as System Administrator.
+
 ## [1.1.0] - 2026-11-27
 
 ### Changed
@@ -230,7 +236,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.2.0
 [1.1.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.1.0
 [1.0.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0
 [1.0.0-beta.8]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.8
