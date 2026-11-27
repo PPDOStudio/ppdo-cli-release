@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-27
+
+### Changed
+
+- `dv data import` lists each change in its output; `--limit` and `--all` have no effect and are not in the help.
+
+### Fixed
+
+- `dv data` accepts a unique identifier column other than the primary key, for example `team.azureactivedirectoryobjectid`, and exports and imports it as a GUID.
+
 ## [1.0.0] - 2026-11-25
 
 The first version after the beta: ppdo-cli now follows Semantic Versioning and is published under the `latest` tag.
@@ -220,7 +230,8 @@ First public release, on npm as `@ppdostudio/ppdo-cli`. Free to use under the pp
 - The config is JSON, with a JSON schema for editors.
 - `THIRD-PARTY-NOTICES` lists the open source packages bundled into ppdo-cli and their licences.
 
-[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/PPDOStudio/ppdo-cli-release/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.1.0
 [1.0.0]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0
 [1.0.0-beta.8]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/PPDOStudio/ppdo-cli-release/releases/tag/v1.0.0-beta.7
